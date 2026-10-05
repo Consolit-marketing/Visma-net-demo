@@ -4,6 +4,12 @@ Een vereenvoudigde, vrijblijvende **sandbox** waarmee bezoekers de basis van Vis
 kunnen uitproberen — met **dummy-gegevens** van het fictieve bedrijf *Noordzee Outdoor B.V.* —
 zonder je website te verlaten. Bedoeld als lead-tool voor nieuwe-business-leads.
 
+De schermen, navigatie en bediening zijn **nagebouwd op basis van screenshots van het échte
+Visma Net** (zie `docs/UI-SPEC.md`): de bovenbalk met breadcrumb en hamburger-menu, het
+dashboard met gekleurde KPI-tegels, de orderlijst als grid, het moderne orderscherm met
+marge-donut, het klassieke factuur-window (AR301000) met AutoInvoice/Peppol, en de
+inkoopfactuur met SmartScan-herkenning en goedkeuringsworkflow.
+
 > ⚠️ **Geen echte data.** Alle gegevens in deze demo zijn verzonnen. Er is geen koppeling met
 > een live Visma Net-omgeving; alles draait volledig in de browser van de bezoeker. Zo loop je
 > geen enkel privacy-/AVG-risico wanneer je dit publiek op je site plaatst.
@@ -84,8 +90,9 @@ De CTA-pop-up linkt nu naar `CONFIG.ctaUrl`. Voor échte leadregistratie zijn er
 ## Bestanden
 
 ```
-index.html                  App-structuur (shell, navigatie, modal-hosts)
-assets/app.css              Styling op basis van het Visma "Gaia" design system
+index.html                  App-structuur (top bar, breadcrumb, hamburger-flyout, hosts)
+assets/app.css              Styling nagebouwd op de echte Visma Net-schermen
 assets/app.js               Dummy-data, schermen, flows, rondleiding, CTA
 docs/ANALYSE-VISMA-NET.md   Commerciële analyse + onderbouwing van de gekozen USP's
+docs/UI-SPEC.md             Nauwkeurige UI-opbouw van het echte product (referentie)
 ```
