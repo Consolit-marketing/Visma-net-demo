@@ -73,6 +73,41 @@
         }
       ],
       kpi: { revenueYTD: 1284500, cash: 342900, liq30: 186400, vervallen90: 24150 },
+      omzetPerKlant: [
+        { code: "30005", name: "Avontuur Retail B.V.",        omzet: 324100, orders: 38 },
+        { code: "30002", name: "Outdoor World Rotterdam",      omzet: 268900, orders: 52 },
+        { code: "30006", name: "Recreatie Groothandel Noord",  omzet: 214300, orders: 29 },
+        { code: "30001", name: "De Kampeervriend",             omzet: 198600, orders: 61 },
+        { code: "30004", name: "Camping De Duinrand",          omzet: 162200, orders: 24 },
+        { code: "30003", name: "Buitensport Jansen",           omzet: 116400, orders: 33 }
+      ],
+      bankAccounts: [
+        { acct: "1000", name: "ING Zakelijke rekening",   iban: "NL21 INGB 0001 2345 67", saldo: 198400 },
+        { acct: "1010", name: "Rabobank Spaarrekening",   iban: "NL44 RABO 0127 8899 10", saldo: 120000 },
+        { acct: "1100", name: "Kas",                       iban: "—",                       saldo: 24500 }
+      ],
+      openAR: [
+        { inv: "253300088", code: "30005", name: "Avontuur Retail B.V.",       date: "15-6-2026",  due: "15-7-2026",  amount: 14300, days: 112 },
+        { inv: "253300090", code: "30002", name: "Outdoor World Rotterdam",     date: "28-6-2026",  due: "28-7-2026",  amount: 9850,  days: 97 },
+        { inv: "253300095", code: "30006", name: "Recreatie Groothandel Noord", date: "22-7-2026",  due: "22-8-2026",  amount: 8400,  days: 74 },
+        { inv: "253300101", code: "30004", name: "Camping De Duinrand",         date: "21-8-2026",  due: "20-9-2026",  amount: 6900,  days: 44 },
+        { inv: "253300106", code: "30001", name: "De Kampeervriend",            date: "17-9-2026",  due: "17-10-2026", amount: 9800,  days: 18 },
+        { inv: "253300108", code: "30003", name: "Buitensport Jansen",          date: "28-9-2026",  due: "28-10-2026", amount: 6400,  days: 7 },
+        { inv: "253300110", code: "30005", name: "Avontuur Retail B.V.",        date: "02-10-2026", due: "17-10-2026", amount: 18200, days: -12 },
+        { inv: "253300111", code: "30002", name: "Outdoor World Rotterdam",     date: "03-10-2026", due: "10-10-2026", amount: 12400, days: -5 }
+      ],
+      liq: {
+        ontvangsten: [
+          { label: "Debiteuren (vervallend binnen 30 dgn)", amount: 142300 },
+          { label: "Overige ontvangsten", amount: 8000 }
+        ],
+        uitgaven: [
+          { label: "Crediteuren (openstaand)", amount: 118400 },
+          { label: "Salarissen", amount: 42000 },
+          { label: "Btw-afdracht", amount: 18600 },
+          { label: "Vaste lasten", amount: 7400 }
+        ]
+      },
       liquidity: [1.13, 1.11, 1.22, 0.83, 2.1, 2.25, 2.6, 2.61, 3.26, 3.27, 3.27, 3.27], // x mln
       debAging: [
         { name: "Avontuur Retail B.V.", amount: 48300 },
@@ -151,7 +186,7 @@
     return '<div class="chart-wrap"><svg viewBox="0 0 ' + W + ' ' + H + '">' + grid + '<path d="' + d + '" fill="none" stroke="' + CHART_BLUE + '" stroke-width="2"/>' + dots + xlabs + '</svg></div>';
   }
   function hbar(rows) {
-    var W = 560, rowH = 30, pL = 180, pR = 54, H = rows.length * rowH + 6, bw = W - pL - pR;
+    var W = 600, rowH = 30, pL = 180, pR = 86, H = rows.length * rowH + 6, bw = W - pL - pR;
     var max = Math.max.apply(null, rows.map(function (r) { return r.amount; }));
     var out = "";
     rows.forEach(function (r, i) {
@@ -172,10 +207,14 @@
 
   /* ---------------- BREADCRUMB + NAV ---------------- */
   var CRUMBS = {
-    dashboard: ["Services", "Visma Net", "Dashboards", "Dashboard: Financieel", "Financiële gebruiker"],
-    sales:     ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders"],
-    order:     ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders (nieuwe versie)"],
-    purchase:  ["Services", "Visma Net", "Crediteuren", "Transacties", "Inkoopfacturen"]
+    dashboard:   ["Services", "Visma Net", "Dashboards", "Dashboard: Financieel", "Financiële gebruiker"],
+    sales:       ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders"],
+    order:       ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders (nieuwe versie)"],
+    purchase:    ["Services", "Visma Net", "Crediteuren", "Transacties", "Inkoopfacturen"],
+    omzet:       ["Services", "Visma Net", "Verkoop", "Analyses", "Omzet per debiteur"],
+    cash:        ["Services", "Visma Net", "Bank/kas", "Overzichten", "Kassaldi"],
+    debiteuren:  ["Services", "Visma Net", "Debiteuren", "Overzichten", "Openstaande posten"],
+    liquiditeit: ["Services", "Visma Net", "Bank/kas", "Analyses", "Liquiditeitsprognose"]
   };
   function setBreadcrumb(view) {
     var parts = CRUMBS[view] || ["Services", "Visma Net"];
@@ -187,9 +226,9 @@
   var MENU = [
     { label: "Eigen menu", dim: true },
     { label: "Dashboards", nav: "dashboard" },
-    { label: "Crediteuren", dim: true },
-    { label: "Debiteuren", dim: true },
-    { label: "Bank/kas", dim: true },
+    { label: "Crediteuren", nav: "purchase" },
+    { label: "Debiteuren", nav: "debiteuren" },
+    { label: "Bank/kas", nav: "cash" },
     { label: "Grootboek", dim: true },
     { label: "Valuta", dim: true },
     { label: "Verkoop", nav: "sales" },
@@ -216,6 +255,10 @@
     if (view === "dashboard") renderDashboard();
     if (view === "sales") renderSales();
     if (view === "purchase") renderPurchase();
+    if (view === "omzet") renderOmzet();
+    if (view === "cash") renderCash();
+    if (view === "debiteuren") renderDebiteuren();
+    if (view === "liquiditeit") renderLiquiditeit();
     // 'order' view is rendered on demand by openOrder()
   }
 
@@ -224,12 +267,12 @@
     var k = S.kpi;
     var tiles =
       '<div class="tile-logo"><div class="lg"><svg class="mark" viewBox="0 0 288 288"><path fill="#ff8e05" d="M223.43,111.861c-.48,4.63-3.21,8.96-7.45,11.38l-45.47,26.39c-8.11-4.68-27.819-15.97-27.819-15.97-5.15-3.25-8.44-8.93-8.44-15.21v-49.989c0-3.2,1.7-6.2,4.5-7.5,1.9-1.1,4.3-1.2,6.4,0l68.428,39.469c3.98,2.3,6.09,5.15,6.26,9.2Z"/><path fill="#9ecb45" d="M153.809,164.121v54.485c0,6.864-7.294,11.161-13.299,7.724l-68.428-39.467c-4.5-2.8-7.29-5.79-7.51-10.72.22-4.94,3.01-9.66,7.51-12.24l45.47-26.38c9.66,5.58,25.53,14.59,31.32,18.03,3,1.71,4.93,4.93,4.93,8.57Z"/><path fill="#1f7f94" d="M64.6,176.489c.3-5.01,3.04-9.54,7.48-12.16l45.5-26.49,30.03-17.38c5.36-3.22,8.8-9.01,8.8-15.44v-49.989c0-3.21-1.72-6.22-4.51-7.72-2.57-1.51-6.01-1.51-8.8,0l-68.429,39.479c-4.71,2.78-7.51,7.71-7.51,13.08v74.448z"/></svg> NOORDZEE OUTDOOR</div></div>' +
-      tile("teal", euro0(k.revenueYTD), "Omzet YTD", null, null) +
-      tile("green", euro0(k.cash), "Cashpositie", "bank", null) +
+      tile("teal", euro0(k.revenueYTD), "Omzet YTD", null, "omzet") +
+      tile("green", euro0(k.cash), "Cashpositie", "bank", "cash") +
       tile("orange", String(pendingCount()), "Te keuren inkoopfacturen", null, "purchase") +
       tile("teal", String(openOrdersCount()), "Openstaande verkooporders", null, "sales") +
-      tile("red", euro0(k.vervallen90), "Vervallen debiteuren 90+", null, null) +
-      tile("grey", euro0(k.liq30), "Liq.behoefte 30 dgn", null, null);
+      tile("red", euro0(k.vervallen90), "Vervallen debiteuren 90+", null, "debiteuren") +
+      tile("grey", euro0(k.liq30), "Liq.behoefte 30 dgn", null, "liquiditeit");
 
     $("#view-dashboard").innerHTML =
       '<div class="page-title-row"><h1>Financiële gebruiker</h1><span class="star">☆</span><span class="spacer"></span>' +
@@ -248,6 +291,94 @@
       (icon ? '<span class="ic">' + ic(icon) + '</span>' : "") +
       '<span class="v">' + value + '</span><span class="l">' + label + '</span>' +
       '<span class="more">Meer gegevens →</span></button>';
+  }
+
+  /* ---------------- DRILL-DOWN: OMZET PER DEBITEUR ---------------- */
+  function inquiryToolbar() { return '<div class="grid-toolbar">' + gt("refresh") + gt("undo") + gt("fit") + gt("excel") + gt("filter") + '</div>'; }
+  function renderOmzet() {
+    var total = S.omzetPerKlant.reduce(function (a, r) { return a + r.omzet; }, 0);
+    var rows = S.omzetPerKlant.map(function (r) {
+      return '<tr><td>' + r.code + '</td><td>' + esc(r.name) + '</td><td class="num">' + money(r.omzet) + '</td><td class="num">' + r.orders + '</td><td class="num">' + (r.omzet / total * 100).toFixed(1).replace(".", ",") + '%</td></tr>';
+    }).join("");
+    $("#view-omzet").innerHTML =
+      '<div class="page-title-row"><h1>Omzet per debiteur</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-nav="dashboard">' + ic("prev") + ' Terug naar dashboard</button></div>' +
+      '<div style="padding:0 20px 8px;color:#5a6b78;font-size:12.5px">Boekjaar 2026 · year-to-date · excl. btw · omzet YTD <b>' + euro0(total) + '</b></div>' +
+      inquiryToolbar() +
+      '<div style="padding:12px 20px"><div class="dash-card"><div class="dc-head">' + ic("refresh") + 'Omzet per debiteur (YTD)</div><div class="dc-body">' + hbar(S.omzetPerKlant.map(function (r) { return { name: r.name, amount: r.omzet }; })) + '</div></div></div>' +
+      '<div class="grid-scroll"><table class="grid"><thead><tr><th>Debiteur</th><th>Naam debiteur</th><th class="num">Omzet YTD</th><th class="num">Aantal orders</th><th class="num">Aandeel</th></tr></thead>' +
+      '<tbody>' + rows + '<tr class="sel"><td></td><td style="font-weight:600">Totaal</td><td class="num" style="font-weight:700">' + money(total) + '</td><td class="num" style="font-weight:600">' + S.omzetPerKlant.reduce(function (a, r) { return a + r.orders; }, 0) + '</td><td class="num">100,0%</td></tr></tbody></table></div>' +
+      '<div class="grid-foot">1-' + S.omzetPerKlant.length + ' van ' + S.omzetPerKlant.length + ' regels</div>';
+  }
+
+  /* ---------------- DRILL-DOWN: CASHPOSITIE (BANK/KAS) ---------------- */
+  function renderCash() {
+    var total = S.bankAccounts.reduce(function (a, r) { return a + r.saldo; }, 0);
+    var rows = S.bankAccounts.map(function (b) {
+      return '<tr><td>' + b.acct + '</td><td>' + esc(b.name) + '</td><td>' + esc(b.iban) + '</td><td>EUR</td><td class="num">' + money(b.saldo) + '</td></tr>';
+    }).join("");
+    $("#view-cash").innerHTML =
+      '<div class="page-title-row"><h1>Kassaldi</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-nav="dashboard">' + ic("prev") + ' Terug naar dashboard</button></div>' +
+      '<div style="padding:0 20px 8px;color:#5a6b78;font-size:12.5px">Actuele saldi van bank- en kasrekeningen · totale cashpositie <b>' + euro0(total) + '</b></div>' +
+      inquiryToolbar() +
+      '<div class="grid-scroll"><table class="grid"><thead><tr><th>Rekening</th><th>Omschrijving</th><th>IBAN</th><th>Valuta</th><th class="num">Saldo</th></tr></thead>' +
+      '<tbody>' + rows + '<tr class="sel"><td></td><td style="font-weight:600">Totaal cashpositie</td><td></td><td></td><td class="num" style="font-weight:700">' + money(total) + '</td></tr></tbody></table></div>' +
+      '<div class="grid-foot">1-' + S.bankAccounts.length + ' van ' + S.bankAccounts.length + ' regels</div>';
+  }
+
+  /* ---------------- DRILL-DOWN: VERVALLEN DEBITEUREN (OUDERDOM) ---------------- */
+  function arBucket(days) { return days <= 0 ? "Niet vervallen" : days <= 30 ? "1 - 30" : days <= 60 ? "31 - 60" : days <= 90 ? "61 - 90" : "90+"; }
+  function renderDebiteuren() {
+    var buckets = { "Niet vervallen": 0, "1 - 30": 0, "31 - 60": 0, "61 - 90": 0, "90+": 0 };
+    S.openAR.forEach(function (r) { buckets[arBucket(r.days)] += r.amount; });
+    var total = S.openAR.reduce(function (a, r) { return a + r.amount; }, 0);
+    var bucketOrder = ["Niet vervallen", "1 - 30", "31 - 60", "61 - 90", "90+"];
+    var strip = bucketOrder.map(function (b) {
+      var warn = b === "90+" || b === "61 - 90";
+      return '<div style="flex:1;border:1px solid #e2e6ea;border-top:3px solid ' + (b === "90+" ? "#d9534f" : b === "61 - 90" ? "#e8923a" : "#1f7f94") + ';border-radius:6px;padding:10px 12px">' +
+        '<div style="font-size:11.5px;color:#5a6b78">' + b + (b === "Niet vervallen" ? "" : " dgn") + '</div><div style="font-size:18px;font-weight:700;' + (warn ? "color:#cc453e" : "") + '">' + money(buckets[b]) + '</div></div>';
+    }).join("");
+    var rows = S.openAR.slice().sort(function (a, b) { return b.days - a.days; }).map(function (r) {
+      var bk = arBucket(r.days), late = r.days > 0;
+      return '<tr><td><span class="so-type">AR</span></td><td class="lnk" data-noop="1">' + r.inv + '</td><td>' + r.code + '</td><td>' + esc(r.name) + '</td><td>' + r.date + '</td><td>' + r.due + '</td>' +
+        '<td class="num">' + money(r.amount) + '</td><td class="num"' + (late ? ' style="color:#cc453e;font-weight:600"' : "") + '>' + (late ? r.days : "–") + '</td>' +
+        '<td>' + (bk === "90+" ? '<span style="color:#cc453e;font-weight:600">90+</span>' : bk) + '</td></tr>';
+    }).join("");
+    $("#view-debiteuren").innerHTML =
+      '<div class="page-title-row"><h1>Openstaande posten debiteuren</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-nav="dashboard">' + ic("prev") + ' Terug naar dashboard</button></div>' +
+      '<div style="padding:0 20px 8px;color:#5a6b78;font-size:12.5px">Ouderdomsanalyse per ' + DEMO_TODAY + ' · totaal openstaand <b>' + euro0(total) + '</b> · waarvan 90+ <b style="color:#cc453e">' + euro0(buckets["90+"]) + '</b></div>' +
+      '<div style="display:flex;gap:10px;padding:8px 20px 14px">' + strip + '</div>' +
+      inquiryToolbar() +
+      '<div class="grid-scroll"><table class="grid"><thead><tr><th>Soort</th><th>Referentienr.</th><th>Debiteur</th><th>Naam debiteur</th><th>Factuurdatum</th><th>Vervaldatum</th><th class="num">Openstaand bedrag</th><th class="num">Dagen te laat</th><th>Ouderdom</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="grid-foot">1-' + S.openAR.length + ' van ' + S.openAR.length + ' regels</div>';
+  }
+
+  /* ---------------- DRILL-DOWN: LIQUIDITEITSPROGNOSE ---------------- */
+  function renderLiquiditeit() {
+    var cash = S.kpi.cash;
+    var inSum = S.liq.ontvangsten.reduce(function (a, r) { return a + r.amount; }, 0);
+    var outSum = S.liq.uitgaven.reduce(function (a, r) { return a + r.amount; }, 0);
+    var eind = cash + inSum - outSum;
+    function tbl(title, items, cls) {
+      return '<div class="dash-card"><div class="dc-head">' + title + '</div><div style="padding:4px 0 10px">' +
+        '<table class="grid" style="white-space:normal"><tbody>' + items.map(function (r) { return '<tr><td>' + esc(r.label) + '</td><td class="num">' + money(r.amount) + '</td></tr>'; }).join("") +
+        '<tr class="sel"><td style="font-weight:600">Totaal</td><td class="num" style="font-weight:700' + (cls === "out" ? ";color:#cc453e" : "") + '">' + money(cls === "out" ? -outSum : inSum) + '</td></tr></tbody></table></div></div>';
+    }
+    $("#view-liquiditeit").innerHTML =
+      '<div class="page-title-row"><h1>Liquiditeitsprognose</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-nav="dashboard">' + ic("prev") + ' Terug naar dashboard</button></div>' +
+      '<div style="padding:0 20px 8px;color:#5a6b78;font-size:12.5px">Prognose komende 30 dagen · liquiditeitsbehoefte (uitgaven) <b>' + euro0(outSum) + '</b></div>' +
+      '<div style="padding:12px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">' +
+        tbl("Verwachte ontvangsten (30 dgn)", S.liq.ontvangsten, "in") +
+        tbl("Verwachte uitgaven (30 dgn)", S.liq.uitgaven, "out") +
+      '</div>' +
+      '<div style="padding:0 20px 24px"><div class="dash-card"><div style="padding:16px">' +
+        liqRow("Beginsaldo (huidige cashpositie)", cash, false) +
+        liqRow("Verwachte ontvangsten", inSum, false) +
+        liqRow("Verwachte uitgaven", -outSum, false) +
+        liqRow("Prognose-eindsaldo over 30 dagen", eind, true) +
+      '</div></div></div>';
+  }
+  function liqRow(label, v, grand) {
+    return '<div style="display:flex;justify-content:space-between;padding:' + (grand ? "12px 0 0;border-top:1px solid #e2e6ea;margin-top:6px;font-weight:700;font-size:15px" : "6px 0;font-size:13px") + '"><span>' + esc(label) + '</span><span style="font-variant-numeric:tabular-nums' + (v < 0 ? ";color:#cc453e" : "") + '">' + money(v) + '</span></div>';
   }
 
   /* ---------------- SALES LIST ---------------- */
