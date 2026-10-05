@@ -52,25 +52,31 @@
         so("253100006", "In verzending","26-3-2026", "30003", "Buitensport Jansen",          1112.96, "253200003", 1, 0)
       ],
       purchaseInvoices: [
-        {
-          id: "IF-90231", supplier: "Tentpoint Supplies B.V.", date: "01-10-2026",
-          channel: "Peppol (e-factuur)", net: 7000.00, vat: 1470.00, total: 8470.00,
-          account: "7000 · Inkoopwaarde handelsgoederen", status: "te keuren",
-          steps: [ { role: "Inkoop", who: "Mark de Vries", state: "pending" },
-                   { role: "Financieel manager (> € 5.000)", who: "Sandra Bos", state: "waiting" } ]
-        },
-        {
-          id: "IF-90232", supplier: "Fjordtex Fabrics", date: "02-10-2026",
-          channel: "Peppol (e-factuur)", net: 2100.00, vat: 441.00, total: 2541.00,
-          account: "7000 · Inkoopwaarde handelsgoederen", status: "te keuren",
-          steps: [ { role: "Inkoop", who: "Mark de Vries", state: "pending" } ]
-        },
-        {
-          id: "IF-90233", supplier: "Logistiek Partner Zuid", date: "02-10-2026",
-          channel: "E-mail (PDF, via SmartScan)", net: 800.00, vat: 168.00, total: 968.00,
-          account: "4210 · Vrachtkosten", status: "te keuren",
-          steps: [ { role: "Inkoop", who: "Mark de Vries", state: "pending" } ]
-        }
+        { id: "251600037", factuurnr: "25-4471", supplier: "Tentpoint Supplies B.V.", crediteurnr: "40021",
+          date: "01-10-2026", due: "31-10-2026", vestiging: "NO - Noordzee Outdoor B.V.", locatie: "PRIMAIR - Hoofdlocatie",
+          terms: "30 - 30 dagen", omschrijving: "Inkoop tenten najaarscollectie", net: 7000.00, vat: 1470.00, total: 8470.00,
+          account: "7000 - Inkoopwaarde handelsgoederen", sub: "MIDDEN-TNT-INK", channel: "Peppol (e-factuur)",
+          apprStatus: "Wachtend", docStatus: "In balans", pdfTitle: "Factuur 25-4471.pdf", initialApprover: "Mark de Vries",
+          workflow: [ { label: "Goedkeuring gestart", who: "Mark de Vries", via: true, state: "done" },
+                      { label: "Inkoop", who: "Mark de Vries", state: "pending" },
+                      { label: "Financieel manager (> € 5.000)", who: "Sandra Bos", state: "wait" } ],
+          lines: [ { desc: "Inkoop tenten najaarscollectie", rekening: "7000 - Inkoopwaarde handelsgoederen", bedrag: 7000.00 } ] },
+        { id: "251600038", factuurnr: "F-20261002", supplier: "Fjordtex Fabrics", crediteurnr: "40044",
+          date: "02-10-2026", due: "01-11-2026", vestiging: "NO - Noordzee Outdoor B.V.", locatie: "PRIMAIR - Hoofdlocatie",
+          terms: "30 - 30 dagen", omschrijving: "Tentdoek en ritsen", net: 2100.00, vat: 441.00, total: 2541.00,
+          account: "7000 - Inkoopwaarde handelsgoederen", sub: "MIDDEN-MAT-INK", channel: "Peppol (e-factuur)",
+          apprStatus: "Wachtend", docStatus: "In balans", pdfTitle: "Factuur F-20261002.pdf", initialApprover: "Mark de Vries",
+          workflow: [ { label: "Goedkeuring gestart", who: "Mark de Vries", via: true, state: "done" },
+                      { label: "Inkoop", who: "Mark de Vries", state: "pending" } ],
+          lines: [ { desc: "Tentdoek en ritsen", rekening: "7000 - Inkoopwaarde handelsgoederen", bedrag: 2100.00 } ] },
+        { id: "251600039", factuurnr: "2026-5587", supplier: "Logistiek Partner Zuid", crediteurnr: "40102",
+          date: "02-10-2026", due: "16-10-2026", vestiging: "NO - Noordzee Outdoor B.V.", locatie: "PRIMAIR - Hoofdlocatie",
+          terms: "14 - 14 dagen", omschrijving: "Vrachtkosten september", net: 800.00, vat: 168.00, total: 968.00,
+          account: "4210 - Vrachtkosten", sub: "ALG-TRANSPORT", channel: "E-mail (PDF)",
+          apprStatus: "Wachtend", docStatus: "In balans", pdfTitle: "Factuur 2026-5587.pdf", initialApprover: "Mark de Vries",
+          workflow: [ { label: "Goedkeuring gestart", who: "Mark de Vries", via: true, state: "done" },
+                      { label: "Inkoop", who: "Mark de Vries", state: "pending" } ],
+          lines: [ { desc: "Vrachtkosten september", rekening: "4210 - Vrachtkosten", bedrag: 800.00 } ] }
       ],
       kpi: { revenueYTD: 1284500, cash: 342900, liq30: 186400, vervallen90: 24150 },
       omzetPerKlant: [
@@ -138,7 +144,7 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function product(sku) { return S.products.find(function (p) { return p.sku === sku; }); }
   function customer(code) { return S.customers.find(function (c) { return c.code === code; }); }
-  function pendingCount() { return S.purchaseInvoices.filter(function (i) { return i.status === "te keuren"; }).length; }
+  function pendingCount() { return S.purchaseInvoices.filter(function (i) { return i.apprStatus === "Wachtend"; }).length; }
   function openOrdersCount() { return S.salesOrders.filter(function (o) { return o.status !== "Voltooid"; }).length; }
 
   /* ---------------- ICONS ---------------- */
@@ -210,7 +216,8 @@
     dashboard:   ["Services", "Visma Net", "Dashboards", "Dashboard: Financieel", "Financiële gebruiker"],
     sales:       ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders"],
     order:       ["Services", "Visma Net", "Verkoop", "Transacties", "Verkooporders (nieuwe versie)"],
-    purchase:    ["Services", "Visma Net", "Crediteuren", "Transacties", "Inkoopfacturen"],
+    purchase:    ["Services", "Visma Net", "Crediteuren", "Verwerking", "Facturen goedkeuren (Approval)"],
+    approval:    ["Services", "Approval", "Mijn taken"],
     omzet:       ["Services", "Visma Net", "Verkoop", "Analyses", "Omzet per debiteur"],
     cash:        ["Services", "Visma Net", "Bank/kas", "Overzichten", "Kassaldi"],
     debiteuren:  ["Services", "Visma Net", "Debiteuren", "Overzichten", "Openstaande posten"],
@@ -650,72 +657,217 @@
       '<table><thead><tr><th>Artikel</th><th class="r">Aantal</th><th class="r">Prijs</th><th class="r">Totaal</th></tr></thead><tbody>' + lines + '</tbody></table>' + totals + '</div>';
   }
 
-  /* ---------------- PURCHASE (inkoopfacturen + approval) ---------------- */
+  /* ---------------- INKOOP: Facturen goedkeuren (Approval) ---------------- */
+  function findInv(id) { return S.purchaseInvoices.find(function (i) { return i.id === id; }); }
+  function apprStatusPill(s) {
+    var m = s === "Wachtend" ? ["st-wait", "Wachtend"] : s === "Goedgekeurd" ? ["st-ok", "Goedgekeurd"] : ["st-no", "Afgewezen"];
+    return '<span class="pill-status ' + m[0] + '"><span class="d"></span>' + m[1] + '</span>';
+  }
   function renderPurchase() {
     $("#view-purchase").innerHTML =
-      '<div class="page-title-row"><h1>Inkoopfacturen</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-noop="1">⚙ Aanpassingen ▾</button></div>' +
+      '<div class="page-title-row"><h1>Facturen goedkeuren (Approval)</h1><span class="star">☆</span><span class="spacer"></span><button class="link-btn" data-noop="1">⚙ Aanpassingen ▾</button></div>' +
       '<div class="grid-toolbar">' + gt("refresh") + gt("undo") + gt("fit") + gt("excel") + gt("filter") + '</div>' +
-      '<div class="list-tabs"><button class="list-tab active" data-noop="1">Alle facturen</button><button class="list-tab" data-noop="1">Te keuren</button><button class="list-tab" data-noop="1">Goedgekeurd</button></div>' +
-      '<div class="grid-scroll"><table class="grid"><thead><tr><th></th><th>Soort</th><th>Referentienr.</th><th>Crediteur</th><th>Datum</th><th>Binnengekomen via</th><th class="num">Bedrag (incl. btw)</th><th>Status</th><th></th></tr></thead><tbody id="purchase-rows">' + purchaseRows() + '</tbody></table></div>' +
+      '<div class="list-tabs"><button class="list-tab active" data-noop="1">Te keuren</button><button class="list-tab" data-noop="1">Goedgekeurd</button><button class="list-tab" data-noop="1">Afgewezen</button></div>' +
+      '<div class="grid-scroll"><table class="grid"><thead><tr><th>Type</th><th>Factuurnr.</th><th>Approval status</th><th>Documentstatus</th><th>Initial approver</th><th>Crediteur</th><th>Naam crediteur</th><th>Datum</th><th>Vervaldatum</th><th class="num">Bedrag</th><th></th></tr></thead><tbody id="purchase-rows">' + purchaseRows() + '</tbody></table></div>' +
       '<div class="grid-foot">1-' + S.purchaseInvoices.length + ' van ' + S.purchaseInvoices.length + ' regels</div>';
   }
   function purchaseRows() {
     return S.purchaseInvoices.map(function (inv) {
-      var st = inv.status === "te keuren" ? "Ter goedkeuring" : inv.status === "geboekt" ? "Goedgekeurd & vrijgegeven" : "Afgekeurd";
-      var btn = '<button class="btn btn-sm ' + (inv.status === "te keuren" ? "btn-primary" : "btn-secondary") + '" data-action="open-invoice" data-id="' + inv.id + '">' + (inv.status === "te keuren" ? "Beoordelen" : "Bekijken") + '</button>';
-      return '<tr><td><span style="color:#8a97a1">' + ic("clip") + '</span></td><td><span class="so-type">AP</span></td><td class="lnk" data-action="open-invoice" data-id="' + inv.id + '">' + inv.id + '</td><td>' + esc(inv.supplier) + '</td><td>' + inv.date + '</td><td>' + esc(inv.channel) + '</td><td class="num">' + money(inv.total) + '</td><td>' + esc(st) + '</td><td style="text-align:right">' + btn + '</td></tr>';
+      var canReview = inv.apprStatus === "Wachtend";
+      var btn = '<button class="btn btn-sm ' + (canReview ? "btn-primary" : "btn-secondary") + '" data-action="' + (canReview ? "open-approval" : "open-ap-window") + '" data-id="' + inv.id + '">' + (canReview ? "Beoordelen" : "Bekijken") + '</button>';
+      return '<tr><td><span class="so-type">AP</span></td>' +
+        '<td class="lnk" data-action="open-ap-window" data-id="' + inv.id + '">' + esc(inv.factuurnr) + '</td>' +
+        '<td>' + apprStatusPill(inv.apprStatus) + '</td>' +
+        '<td>' + esc(inv.docStatus) + '</td>' +
+        '<td>' + esc(inv.initialApprover) + '</td>' +
+        '<td>' + inv.crediteurnr + '</td><td>' + esc(inv.supplier) + '</td>' +
+        '<td>' + inv.date + '</td><td>' + inv.due + '</td><td class="num">' + money(inv.total) + '</td>' +
+        '<td style="text-align:right">' + btn + '</td></tr>';
     }).join("");
   }
-  function openInvoice(id) {
-    var inv = S.purchaseInvoices.find(function (i) { return i.id === id; }); if (!inv) return;
+
+  /* ---------------- APPROVAL TAAKSCHERM (Mijn taken) ---------------- */
+  function openApprovalTask(id) { renderApprovalTask(id); showView("approval"); }
+  function renderApprovalTask(id) {
+    var inv = findInv(id); if (!inv) return;
+    var canAct = inv.apprStatus === "Wachtend";
+    var actions = canAct
+      ? '<button class="btn btn-primary" data-action="appr-approve" data-id="' + id + '">Goedkeuren…</button>' +
+        '<button class="btn btn-secondary" data-action="appr-reject" data-id="' + id + '">Afwijzen…</button>'
+      : apprStatusPill(inv.apprStatus);
+    $("#view-approval").innerHTML =
+      '<div class="appr-head">' +
+        '<button class="appr-back" data-nav="purchase" title="Terug">‹</button>' +
+        '<div class="appr-title"><div class="t">Factuur - ' + esc(inv.supplier) + ' → ' + esc(S.company.name) + '</div><div class="s">Ontvangen van Visma Net</div></div>' +
+        '<div class="appr-actions">' + actions +
+          '<button class="btn btn-secondary" data-action="appr-other" data-id="' + id + '">Andere acties… ▾</button>' +
+          '<span class="appr-tasknav">Taak 1 / 1 <span class="rb">‹</span><span class="rb">›</span></span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="appr">' +
+        '<div class="appr-left">' +
+          '<div class="appr-card"><div class="appr-card-h">Workflowgegevens</div><div class="appr-card-b">' + workflowHtml(inv) + '</div></div>' +
+          '<div class="appr-2col">' +
+            '<div class="appr-card"><div class="appr-card-h">Opmerkingen <span class="cnt0">0</span></div><div class="appr-card-b">' + commentsHtml(inv) + '</div></div>' +
+            '<div class="appr-card"><div class="appr-card-h">Factuur-gegevens</div><div class="appr-card-b">' + invoiceFieldsHtml(inv) + '</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="appr-right"><div class="appr-card pdf"><div class="appr-card-h">Titel bijlage<span class="spacer"></span><a data-noop="1">Alles downloaden</a></div>' + pdfViewerHtml(inv) + '</div></div>' +
+      '</div>';
+  }
+  function workflowHtml(inv) {
+    var steps = inv.workflow.map(function (s) {
+      var cls = s.state === "done" ? "done" : s.state === "pending" ? "pending" : "wait";
+      var icon = s.state === "done" ? ic("check") : s.state === "pending" ? ic("clock") : "";
+      var sub = s.via ? (esc(s.who) + " geactiveerd via Visma Net")
+        : s.state === "done" ? ("Goedgekeurd door " + esc(s.who))
+        : s.state === "pending" ? ("Wacht op goedkeuring door " + esc(s.who))
+        : ("Daarna: " + esc(s.who));
+      return '<div class="wf-step ' + cls + '"><div class="wf-ic">' + icon + '</div><div class="wf-txt"><div class="wf-l">' + esc(s.label) + '</div><div class="wf-s">' + sub + '</div></div></div>';
+    }).join('<div class="wf-arrow">›</div>');
+    var cur = inv.workflow.find(function (s) { return s.state === "pending"; });
+    return '<div class="wf-stepper">' + steps + '</div>' +
+      '<div class="wf-meta">Huidige stap in workflow – <b>' + (cur ? esc(cur.label) : "—") + '</b> ›</div>' +
+      '<div class="wf-meta">Workflowgeschiedenis ›</div>';
+  }
+  function invoiceFieldsHtml(inv) {
+    function f(l, v) { return '<div class="af"><div class="al">' + l + '</div><div class="av">' + v + '</div></div>'; }
+    return '<div class="af-grid">' +
+        f("Omschrijving", esc(inv.omschrijving)) + '<div></div>' +
+        f("Vestiging", esc(inv.vestiging)) + f("Naam crediteur", esc(inv.supplier)) +
+        f("Nummer crediteur", inv.crediteurnr) + f("Factuurnummer", esc(inv.factuurnr)) +
+        f("Referentie crediteur", esc(inv.factuurnr)) + f("Document", inv.id) +
+        f("Factuurdatum", inv.date) + f("Vervaldatum", inv.due) +
+        f("Bedrag", '<b>' + money(inv.total) + ' EUR</b>') + '<div></div>' +
+      '</div>' +
+      '<div class="af-dim">Dimensies</div>' +
+      '<div class="af-grid">' + f("Kostenplaats", "Niet van toepassing") + f("Productgroep", "Niet van toepassing") + f("Regio", "Niet van toepassing") + '</div>';
+  }
+  function commentsHtml() {
+    return '<div class="cmt-empty"><div class="cmt-ic">💬</div><div class="cmt-t">Voorlopig geen commentaar</div><div class="cmt-s">Voeg hieronder uw opmerkingen toe.</div></div>' +
+      '<div class="cmt-input"><div class="cmt-av">U</div><textarea class="cmt-ta" placeholder="Opmerking toevoegen…"></textarea></div>' +
+      '<div class="cmt-foot"><span class="cmt-hint">Concepten worden automatisch opgeslagen.</span><button class="btn btn-secondary btn-sm" data-action="appr-comment">Opmerking</button></div>';
+  }
+  function supplierMark(name) {
+    var ini = name.replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
+    return '<span class="mk">' + esc(ini || "LV") + '</span>';
+  }
+  function pdfViewerHtml(inv) {
+    return '<div class="pdf-toolbar"><span class="pdf-name">' + esc(inv.pdfTitle) + '</span><span class="spacer"></span><span class="pdf-pg">Pagina 1 van 1</span>' + ic("fit") + '</div>' +
+      '<div class="pdf-doc"><div class="pdf-page">' +
+        '<div class="pdf-h">FACTUUR</div>' +
+        '<div class="pdf-logo">' + supplierMark(inv.supplier) + '<span>' + esc(inv.supplier) + '</span></div>' +
+        '<div class="pdf-meta">Factuurnr. ' + esc(inv.factuurnr) + ' · ' + inv.date + ' · Document ' + inv.id + '</div>' +
+        '<table class="pdf-tbl"><thead><tr><th>Omschrijving</th><th class="num">Bedrag</th></tr></thead><tbody>' +
+          inv.lines.map(function (l) { return '<tr><td>' + esc(l.desc) + '</td><td class="num">' + money(l.bedrag) + '</td></tr>'; }).join("") +
+          '<tr><td class="num">Btw 21%</td><td class="num">' + money(inv.vat) + '</td></tr>' +
+          '<tr class="tot"><td class="num">Totaal</td><td class="num">' + money(inv.total) + '</td></tr>' +
+        '</tbody></table>' +
+        '<div class="pdf-foot">Aan: ' + esc(S.company.name) + ' · Betaaltermijn ' + inv.terms + '</div>' +
+      '</div></div>';
+  }
+
+  /* ---------------- GOEDKEUREN / AFWIJZEN ---------------- */
+  function apprApproveConfirm(id) {
+    var inv = findInv(id); if (!inv) return;
+    var m = el('<div class="modal"></div>');
+    m.innerHTML = '<div class="modal-head"><h2>Factuur goedkeuren</h2><span class="sub">' + esc(inv.supplier) + ' · ' + money(inv.total) + '</span><button class="x" data-action="close-modal">&times;</button></div>' +
+      '<div class="modal-body"><p style="margin-top:0;color:#5a6b78">Je keurt deze factuur goed voor de huidige stap in de goedkeuringsworkflow. Je kunt een opmerking meegeven:</p>' +
+      '<textarea class="cmt-ta" style="width:100%" placeholder="Opmerking (optioneel)"></textarea></div>' +
+      '<div class="modal-foot"><button class="btn btn-ghost" data-action="close-modal">Annuleren</button><span class="spacer"></span><button class="btn btn-success" data-action="appr-do-approve" data-id="' + id + '">' + ic("check") + 'Goedkeuren</button></div>';
+    openModal(m);
+  }
+  function apprDoApprove(id) {
+    closeModal();
+    var inv = findInv(id); if (!inv) return;
+    var cur = inv.workflow.find(function (s) { return s.state === "pending"; }); if (cur) cur.state = "done";
+    var next = inv.workflow.find(function (s) { return s.state === "wait"; });
+    if (next) {
+      next.state = "pending";
+      renderApprovalTask(id);
+      toast("Stap goedgekeurd", "Doorgestuurd naar " + next.who + " (" + next.label + ").", "info");
+    } else {
+      inv.apprStatus = "Goedgekeurd";
+      toast("Factuur " + inv.factuurnr + " goedgekeurd", "Klaar om vrij te geven en te boeken (Documentstatus: In balans → Open).", "");
+      showView("purchase");
+    }
+  }
+  function apprRejectConfirm(id) {
+    var inv = findInv(id); if (!inv) return;
+    var m = el('<div class="modal"></div>');
+    m.innerHTML = '<div class="modal-head"><h2>Factuur afwijzen</h2><span class="sub">' + esc(inv.supplier) + ' · ' + money(inv.total) + '</span><button class="x" data-action="close-modal">&times;</button></div>' +
+      '<div class="modal-body"><p style="margin-top:0;color:#5a6b78">De factuur wordt teruggestuurd naar de indiener. Geef een reden op:</p>' +
+      '<textarea class="cmt-ta" style="width:100%" placeholder="Reden van afwijzing"></textarea></div>' +
+      '<div class="modal-foot"><button class="btn btn-ghost" data-action="close-modal">Annuleren</button><span class="spacer"></span><button class="btn btn-danger" data-action="appr-do-reject" data-id="' + id + '">Afwijzen</button></div>';
+    openModal(m);
+  }
+  function apprDoReject(id) {
+    closeModal();
+    var inv = findInv(id); if (!inv) return;
+    var cur = inv.workflow.find(function (s) { return s.state === "pending"; }); if (cur) cur.state = "rejected";
+    inv.apprStatus = "Afgewezen";
+    toast("Factuur " + inv.factuurnr + " afgewezen", "Teruggestuurd naar de indiener.", "warn");
+    showView("purchase");
+  }
+  function apprOther(id, anchor) {
+    openMenu(anchor, [
+      { label: "Uitstellen…", action: function () { toast("Taak uitgesteld", "Je behandelt deze factuur later.", "info"); } },
+      { label: "Doorsturen…", action: function () { toast("Doorgestuurd", "De taak is doorgestuurd naar een collega.", "info"); } },
+      { label: "Controle aanvragen…", action: function () { toast("Controle aangevraagd", "Er is een controle aangevraagd.", "info"); } },
+      { label: "E-mail…", action: function () { toast("E-mail", "E-mailvenster geopend (in de volledige omgeving).", "info"); } },
+      { label: "Bijlage toevoegen…", dim: true }
+    ]);
+  }
+
+  /* ---------------- AP301000-WINDOW (inkoopfactuur bekijken) ---------------- */
+  function openAPWindow(id) {
+    var inv = findInv(id); if (!inv) return;
+    var stPill = inv.apprStatus === "Wachtend" ? '<span class="status-inline" style="color:#c77d1a;font-weight:600">Wachtend</span>'
+      : inv.apprStatus === "Goedgekeurd" ? '<span class="status-inline" style="color:#2f8c4f;font-weight:600">Goedgekeurd</span>'
+      : '<span class="status-inline" style="color:#cc453e;font-weight:600">Afgewezen</span>';
     var m = el('<div class="modal wide"></div>');
     m.innerHTML =
-      '<div class="modal-head"><h2>Inkoopfacturen</h2><span class="sub">AP301000 · ' + esc(inv.id) + ' · ' + esc(inv.channel) + '</span><button class="x" data-action="close-modal">&times;</button></div>' +
+      '<div class="modal-head"><h2>Inkoopfacturen</h2><span class="sub">AP301000 · ' + inv.id + ' · ' + esc(inv.supplier) + '</span><button class="x" data-action="close-modal">&times;</button></div>' +
       '<div class="modal-body" style="padding:0">' +
-        '<div class="wtoolbar">' + wtb("save", "Opslaan en sluiten", "text") + wtbIco("undo") + wtbIco("plus", "add") + wtbIco("trash") + '<span class="sep"></span>' + wtbIco("first") + wtbIco("prev") + wtbIco("next") + wtbIco("last") + '<span class="sep"></span>' +
-          '<button class="tb text" data-noop="1">Acties <span class="caret">▾</span></button><button class="tb text" data-noop="1">Rapporten <span class="caret">▾</span></button></div>' +
-        '<div style="padding:18px"><div class="wform-grid" style="gap:16px 28px">' +
-          '<div><div style="font-weight:600;font-size:13px;margin-bottom:10px">Automatisch herkend <span class="recog-tag">SmartScan</span></div>' +
-            recogF("Crediteur", esc(inv.supplier)) + recogF("Factuurdatum", inv.date) + recogF("Grootboekrekening (voorstel)", esc(inv.account)) +
-            '<div style="display:flex;gap:10px">' + recogF("Bedrag excl. btw", money(inv.net)) + recogF("Btw", money(inv.vat)) + '</div>' +
-            recogF("Totaal incl. btw", '<b style="font-size:15px">' + money(inv.total) + '</b>') +
-          '</div>' +
-          '<div><div style="font-weight:600;font-size:13px;margin-bottom:12px">Goedkeuringsworkflow</div><ul class="timeline" id="appr-timeline">' + apprTimeline(inv) + '</ul>' +
-            (inv.status === "te keuren" ? apprHint(inv) : "") + '</div>' +
+        '<div class="wtoolbar">' + wtb("save", "Opslaan en sluiten", "text") + wtbIco("undo") + wtbIco("plus", "add") + wtbIco("trash") + '<span class="sep"></span>' +
+          wtbIco("first") + wtbIco("prev") + wtbIco("next") + wtbIco("last") + '<span class="sep"></span>' +
+          '<button class="tb text" data-noop="1">Voorl. boeken</button>' +
+          '<button class="tb text disabled" data-noop="1">Vrijgeven</button>' +
+          '<button class="tb text" data-noop="1">Acties <span class="caret">▾</span></button>' +
+          '<button class="tb text" data-noop="1">Analyses <span class="caret">▾</span></button>' +
+          '<button class="tb text" data-noop="1">Rapporten <span class="caret">▾</span></button>' +
+          '<button class="tb text" data-noop="1">Appr. annuleren</button>' +
+          '<button class="tb text" data-noop="1">Afb. verbergen</button>' +
+        '</div>' +
+        '<div class="wform"><div class="wform-grid">' +
+          wf("Soort", '<span class="val">Factuur</span>') +
+          wf("Crediteur", '<span class="val">' + inv.crediteurnr + ' - ' + esc(inv.supplier) + '</span>') +
+          wfAmt("Totaal", inv.total) +
+          wf("Referentienr.", '<span class="val">' + inv.id + '</span>') +
+          wf("Locatie", '<span class="val">' + esc(inv.locatie) + '</span>') +
+          wfAmt("Btw-bedrag", inv.vat) +
+          wf("Goedkeuringsst.", stPill) +
+          wf("Valuta", '<span class="val">EUR · 1,00 · Basis</span>') +
+          wfAmt("Belastbaar bedrag", inv.net) +
+          wf("Documentstatus", '<span class="val">' + esc(inv.docStatus) + '</span>') +
+          wf("Voorwaarden", '<span class="val">' + inv.terms + '</span>') +
+          wfAmt("Saldo", inv.total) +
+          wf("Datum", '<span class="val">' + inv.date + '</span>') +
+          wf("Vervaldat.", '<span class="val">' + inv.due + '</span>') +
+          wf("Ref. crediteur", '<span class="val">' + esc(inv.factuurnr) + '</span>') +
         '</div></div>' +
+        '<div class="wtabs">' + ["Documentgegevens", "Financiële gegevens", "Btw-gegevens", "Betalingen", "Kortingsgegevens", "Goedkeuringsgegevens"].map(function (t, i) { return '<button class="wtab' + (i === 0 ? " active" : "") + '" data-noop="1">' + esc(t) + '</button>'; }).join("") + '</div>' +
+        '<div class="grid-toolbar">' + gt("refresh") + '<button class="gt add" data-noop="1">' + ic("plus") + '</button>' + gt("pencil") + '<button class="gt" data-noop="1">Inkoopontvangst toevoegen</button><button class="gt" data-noop="1">Inkoop toevoegen</button>' + '</div>' +
+        '<div class="grid-scroll"><table class="grid"><thead><tr><th>*Vestiging</th><th>Artikel</th><th>Omschrijving transactie</th><th class="num">Aantal</th><th>Eenh.</th><th class="num">Kostprijs</th><th class="num">Bedrag</th><th>*Rekening</th><th>*Subrekening</th><th>Project</th></tr></thead><tbody>' +
+          inv.lines.map(function (l) {
+            return '<tr><td>NO</td><td>—</td><td>' + esc(l.desc) + '</td><td class="num">1</td><td>stuk</td><td class="num">' + money(l.bedrag) + '</td><td class="num">' + money(l.bedrag) + '</td><td>' + esc(l.rekening) + '</td><td>' + esc(inv.sub) + '</td><td>X - Non-Project Code</td></tr>';
+          }).join("") +
+        '</tbody></table></div>' +
       '</div>' +
-      '<div class="modal-foot">' + footButtons(inv) + '</div>';
+      '<div class="modal-foot"><span style="font-size:12px;color:#8a97a1">Goedkeuren doe je via <b>Facturen goedkeuren (Approval) → Beoordelen</b>.</span><span class="spacer"></span>' +
+        (inv.apprStatus === "Wachtend" ? '<button class="btn btn-primary" data-action="open-approval" data-id="' + id + '">Naar goedkeuren →</button>' : '<button class="btn btn-secondary" data-action="close-modal">Sluiten</button>') +
+      '</div>';
     openModal(m);
-    setTimeout(function () { $all(".recog").forEach(function (n) { n.classList.add("animate"); }); }, 80);
-  }
-  function recogF(label, val) { return '<div class="recog" style="margin-bottom:12px"><label style="font-size:12px;color:#5a6b78;display:block;margin-bottom:4px">' + esc(label) + '</label><div style="border:1px solid #c4ced6;border-radius:4px;background:#fafbfc;padding:6px 9px;font-size:13px">' + val + '</div></div>'; }
-  function apprTimeline(inv) {
-    return inv.steps.map(function (s, i) {
-      var cls = s.state === "approved" ? "done" : s.state === "pending" ? "active" : s.state === "rejected" ? "rejected" : "";
-      var dot = s.state === "approved" ? '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="width:14px;height:14px">' + I.check + '</svg>' : s.state === "rejected" ? "✕" : (i + 1);
-      var sub = s.state === "approved" ? "Goedgekeurd door " + esc(s.who) : s.state === "rejected" ? "Afgekeurd door " + esc(s.who) : s.state === "pending" ? "Wacht op " + esc(s.who) : "Daarna: " + esc(s.who);
-      return '<li class="' + cls + '"><span class="dot">' + dot + '</span><div><div class="t">' + esc(s.role) + '</div><div class="s">' + sub + '</div></div></li>';
-    }).join("");
-  }
-  function apprHint(inv) {
-    var cur = inv.steps.find(function (s) { return s.state === "pending"; }); if (!cur) return "";
-    return '<div style="margin-top:6px;padding:11px 13px;background:#edf3fd;border-radius:8px;font-size:12.5px;color:#1f4e66">Jij bent nu aan zet als <b>' + esc(cur.role) + '</b>. ' + (inv.steps.length > 1 ? 'Deze factuur doorloopt ' + inv.steps.length + ' stappen (bedrag-afhankelijk).' : 'Eén goedkeuringsstap voor dit bedrag.') + '</div>';
-  }
-  function footButtons(inv) {
-    if (inv.status !== "te keuren") return '<button class="btn btn-ghost" data-action="close-modal">Sluiten</button>';
-    return '<button class="btn btn-danger" data-action="reject-invoice" data-id="' + inv.id + '">Afkeuren</button><span class="spacer"></span><button class="btn btn-success" data-action="approve-invoice" data-id="' + inv.id + '">' + ic("check") + 'Goedkeuren</button>';
-  }
-  function approveInvoice(id) {
-    var inv = S.purchaseInvoices.find(function (i) { return i.id === id; }); if (!inv) return;
-    var cur = inv.steps.find(function (s) { return s.state === "pending"; }); if (cur) cur.state = "approved";
-    var next = inv.steps.find(function (s) { return s.state === "waiting"; });
-    if (next) { next.state = "pending"; $("#appr-timeline").innerHTML = apprTimeline(inv); toast("Stap goedgekeurd", "Doorgestuurd naar " + next.who + " (" + next.role + ").", "info"); }
-    else { inv.status = "geboekt"; closeModal(); toast("Factuur " + inv.id + " goedgekeurd & geboekt", "Automatisch verwerkt op " + inv.account + ".", ""); afterPurchase(); }
-  }
-  function rejectInvoice(id) {
-    var inv = S.purchaseInvoices.find(function (i) { return i.id === id; }); if (!inv) return;
-    var cur = inv.steps.find(function (s) { return s.state === "pending"; }); if (cur) cur.state = "rejected";
-    inv.status = "afgekeurd"; closeModal(); toast("Factuur " + inv.id + " afgekeurd", "Teruggestuurd naar de indiener.", "warn"); afterPurchase();
   }
   function afterPurchase() { if ($("#purchase-rows")) $("#purchase-rows").innerHTML = purchaseRows(); renderDashboard(); }
 
@@ -762,9 +914,14 @@
       case "inv-acties": invActies(id, a); break;
       case "send-peppol": sendPeppol(id); break;
       case "after-peppol": closeModal(); showView("sales"); break;
-      case "open-invoice": openInvoice(id); break;
-      case "approve-invoice": approveInvoice(id); break;
-      case "reject-invoice": rejectInvoice(id); break;
+      case "open-ap-window": openAPWindow(id); break;
+      case "open-approval": openApprovalTask(id); break;
+      case "appr-approve": apprApproveConfirm(id); break;
+      case "appr-reject": apprRejectConfirm(id); break;
+      case "appr-do-approve": apprDoApprove(id); break;
+      case "appr-do-reject": apprDoReject(id); break;
+      case "appr-other": apprOther(id, a); break;
+      case "appr-comment": toast("Opmerking geplaatst", "Je reactie is toegevoegd aan de goedkeuring.", ""); break;
       case "close-modal": closeModal(); break;
       case "reset-demo": resetDemo(); break;
       case "start-tour": startTour(); break;

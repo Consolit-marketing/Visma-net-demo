@@ -111,3 +111,57 @@ Btw-gegevens, Verkoopprovisie, Kortingsgegevens, Betalingen, Bijlagen.
 - De demo blijft **begeleid**: lege verplichte velden worden met realistische dummy-waarden
   voorgevuld in de flow, zodat een leek niet vastloopt, maar het scherm er echt uitziet.
 - Order-to-cash en Inkoop/approval volgen batch 2 van de screenshots.
+
+## 6. Inkoopfactuur beoordelen via APPROVAL (uit schermopname)
+
+De goedkeuring loopt **niet** in een modal op het AP-window, maar via de **Approval**-module.
+Placeholders hieronder; geen echte namen/bedrijven overnemen in de demo.
+
+### 6a. Approval-takenscherm — `Services / Approval / Mijn taken`
+Dit is wat de goedkeurder ziet en waar hij goed-/afkeurt.
+- **Kop**: terug-pijl, titel `Factuur - <leverancier> → <bedrijf>`, subtitel "Ontvangen van Visma Net".
+  Rechts: **Goedkeuren…** (primair, donker), **Afwijzen…**, **Andere acties… ▾**, en **Taak 1 / 1** met ‹ ›.
+- **Links – "Workflowgegevens"**: horizontale stappen-balk:
+  - ✓ (groen) **Goedkeuring gestart** — "<naam> geactiveerd via Visma Net" — tijdstempel.
+  - ⧗ (blauw) **<stapnaam>** — "Wacht op goedkeuring door <namen>".
+  - Daaronder: **Huidige stap in workflow – <stap> ›** en **Workflowgeschiedenis ›**.
+- **Links-onder – "Opmerkingen (n)"**: leeg = "Voorlopig geen commentaar". Invoer: avatar + tekstveld
+  ("Concepten worden automatisch opgeslagen.") + knop **Opmerking**.
+- **Midden – "Factuur-gegevens"**: Omschrijving, Vestiging, Naam crediteur, Nummer crediteur,
+  Factuurnummer, Referentie crediteur, Document (nr), Factuurdatum, Vervaldatum, Bedrag (… EUR),
+  **Dimensies** (Kostenplaats / Productgroep / Regio).
+- **Rechts – "Titel bijlage" / "Alles downloaden"**: PDF-viewer van de factuur (zoom, pagina "1 van 1",
+  print, download, zoek). Er is ook een inline "Externe editor geleverd door Visma Net" met de
+  regel(s) van de factuur ("Alleen mijn regels weergeven").
+- **Andere acties…**: Uitstellen · Doorsturen (F) · Controleer (dim) · Controle aanvragen (V) ·
+  E-mail (M) · Bijlage toevoegen · Volgende taak (X) · Vorige taak (Z).
+
+### 6b. De factuur in het AP301000-window (vanuit "Facturen goedkeuren (Approval)")
+Opent als popup. Zelfde window-paradigma als AR301000, met deze inkoop-specifieke punten:
+- Toolbar: Opslaan en sluiten · undo · + · 🗑 · recordnav · **Voorl. boeken** · **Vrijgeven** (grijs tot
+  goedgekeurd) · **Acties ▾** · **Analyses ▾** · **Rapporten ▾** · **Appr. annuleren** · **Afb. verbergen**.
+  Rechtsboven: Notities · Activiteiten · **Bestanden (n)** · Meldingen.
+- Kop-velden: Soort `Factuur` · Referentienr. · **Goedkeuringsst… `Wachtend`** · Documentstatus `In balans`
+  · ☐ Blokkeren · Datum · Periode · Ref. crediteur · Omschrijving · Ref. inkooporder | Crediteur
+  `<nr> - <naam>` · Locatie `PRIMAIR - Hoofdlocatie` · Valuta `EUR 1,00 Basis` · Voorwaarden `30 - 30 dagen`
+  · Betalingsref. · ☐ G-rekening toepassen · Vervaldat. · Datum bet.korting · Status AutoPay | Totalen:
+  Totaal · Factuurkorting · Belastbaar bedrag · Vrijgesteld bedrag · Btw-bedrag · Ingehouden btw · Saldo
+  · Afrondingsver. · Betalingskorting.
+- Tabs: Documentgegevens · Financiële gegevens · Btw-gegevens · Betalingen · Kortingsgegevens ·
+  **Goedkeuringsgegevens**. Grid-acties: Transitoriaschema · Inkoopontvangst toevoegen ·
+  Ontvangstregel toevoegen · Inkoop toevoegen. Kolommen: Vestiging · Artikel · Omschrijving transactie ·
+  Aantal · Eenh · Kostprijs · Rekening · Korting · Handm. korting · Subrekening · Project.
+- **Analyses ▾**: Crediteurkaart · Historiegegevens van het goedkeuringsdocument ·
+  Regelhistoriegegevens van het goedkeuringsdocument.
+- Rechts een **PDF-viewer** (bv. "Testfactuur.pdf").
+
+### 6c. Statussen
+- **Goedkeuringsstatus**: `Wachtend` → `Goedgekeurd` / `Afgewezen`.
+- **Documentstatus**: `In balans` → (na Vrijgeven) `Open` → (betaald) `Gesloten`.
+- Menu-route naar de goedkeurlijst: **Crediteuren → Verwerking → Facturen goedkeuren (Approval)**.
+
+### 6d. Dashboard-aanvullingen (uit opname)
+Het echte "Dashboard financieel" heeft naast gekleurde KPI-tegels ook: een **live valuta-grafiek**
+(Dollar–Euro, candlestick), **Open verkooporders** (tabel), **Deb.saldo (vervallen)** (staaf) en
+**Voorraad beschikbaar per locatie** (taart). Twee menu-generaties bestaan naast elkaar (klassiek
+"Werkbladen" + nieuw hamburgermenu, toggle "Nieuwe menuweergave").
